@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Freedom Planner - Investasi S&P 500</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2563EB;
+            --secondary: #10B981;
+            --accent: #8B5CF6;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1E293B;
+            --light: #F9FAFB;
+            --gray: #94A3B8;
+            --phase1: #3B82F6;
+            --phase2: #8B5CF6;
+            --phase3: #10B981;
+            --phase4: #F59E0B;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo i {
+            font-size: 32px;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .date-display {
+            background: var(--light);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            color: var(--dark);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 12px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--primary);
+        }
+        
+        .phase-progress {
+            grid-column: span 12;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .phase-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--phase1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phase-card.phase2 {
+            border-top-color: var(--phase2);
+        }
+        
+        .phase-card.phase3 {
+            border-top-color: var(--phase3);
+        }
+        
+        .phase-card.phase4 {
+            border-top-color: var(--phase4);
+        }
+        
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .phase-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--dark);
+        }
+        
+        .phase-badge {
+            background: var(--light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .phase-target {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        .phase-progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .phase-progress-bar {
+            height: 12px;
+            background: #E5E7EB;
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        
+        .phase-progress-fill {
+            height: 100%;
+            border-radius: 100px;
+            transition: width 0.8s ease;
+        }
+        
+        .phase1 .phase-progress-fill {
+            background: var(--phase1);
+        }
+        
+        .phase2 .phase-progress-fill {
+            background: var(--phase2);
+        }
+        
+        .phase3 .phase-progress-fill {
+            background: var(--phase3);
+        }
+        
+        .phase4 .phase-progress-fill {
+            background: var(--phase4);
+        }
+        
+        .phase-progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .input-section {
+            grid-column: span 4;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            background: var(--light);
+            transition: border 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .btn {
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(37, 99, 235, 0.05);
+            transform: translateY(-3px);
+        }
+        
+        .btn-investment {
+            background: var(--phase4);
+            color: white;
+        }
+        
+        .btn-investment:hover {
+            background: #d97706;
+            transform: translateY(-3px);
+        }
+        
+        .savings-overview {
+            grid-column: span 8;
+        }
+        
+        .overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .total-savings {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .savings-history {
+            margin-top: 30px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .history-date {
+            font-weight: 500;
+        }
+        
+        .history-amount {
+            font-weight: 600;
+        }
+        
+        .savings-amount {
+            color: var(--secondary);
+        }
+        
+        .investment-amount {
+            color: var(--phase4);
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+        }
+        
+        .no-data i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        .phases-diagram {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .phase-step {
+            text-align: center;
+            width: 23%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .phase-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .phase1 .phase-icon {
+            background: var(--phase1);
+        }
+        
+        .phase2 .phase-icon {
+            background: var(--phase2);
+        }
+        
+        .phase3 .phase-icon {
+            background: var(--phase3);
+        }
+        
+        .phase4 .phase-icon {
+            background: var(--phase4);
+        }
+        
+        .phase-step .phase-title {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .phase-description {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .connector-line {
+            position: absolute;
+            top: 35px;
+            left: 5%;
+            width: 90%;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+        
+        .connector-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--primary);
+            width: var(--progress, 0%);
+            transition: width 1s ease;
+        }
+        
+        .investment-section {
+            grid-column: span 12;
+            display: none;
+        }
+        
+        .investment-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .portfolio-summary {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .portfolio-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 15px 0;
+            color: var(--phase4);
+        }
+        
+        .portfolio-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .investment-history {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .investment-history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        /* Penambahan gaya baru */
+        .market-data-container {
+            display: flex;
+            justify-content: space-between;
+            background: var(--light);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .market-data-item {
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .market-data-value {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+        
+        .update-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .update-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        
+        .target-configuration {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .target-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .target-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .target-input {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .target-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .target-metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .target-progress-container {
+            margin-top: 20px;
+        }
+        
+        .target-progress-bar {
+            height: 15px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .target-progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            transition: width 0.5s ease;
+        }
+        
+        .time-remaining {
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+        
+        .history-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: none;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        
+        .edit-btn:hover {
+            background: rgba(37, 99, 235, 0.2);
+        }
+        
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(150%);
+            transition: transform 0.5s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .notification.warning {
+            border-left: 5px solid var(--warning);
+        }
+        
+        .notification.info {
+            border-left: 5px solid var(--primary);
+        }
+        
+        .github-section {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+            border-top: 3px solid var(--primary);
+        }
+        
+        .github-btn {
+            background: #333;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .github-btn:hover {
+            background: #444;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            
+            .input-section, .savings-overview {
+                grid-column: span 1;
+            }
+            
+            .phase-progress {
+                grid-template-columns: 1fr;
+            }
+            
+            .investment-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .market-data-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>Financial Freedom Planner</h1>
+            </div>
+            <div class="date-display">
+                <i class="fas fa-calendar-alt"></i> <span id="current-date">28 Juli 2025</span>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <!-- Container untuk data pasar real-time -->
+            <div class="card" style="grid-column: span 12;">
+                <div class="market-data-container">
+                    <div class="market-data-item">
+                        <div>Harga S&P 500</div>
+                        <div class="market-data-value" id="real-sp500-price">$6,388.64</div>
+                    </div>
+                    <div class="market-data-item">
+                        <div>Kurs USD/IDR</div>
+                        <div class="market-data-value" id="real-usd-idr">Rp16,360.00</div>
+                    </div>
+                    <div class="market-data-item">
+                        <div>Nilai Investasi</div>
+                        <div class="market-data-value" id="real-investment-value">Rp0</div>
+                    </div>
+                    <button class="update-button" id="update-market-data">
+                        <i class="fas fa-sync-alt"></i> Update Data Pasar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card phase-progress">
+                <div class="phase-card phase1">
+                    <div class="phase-header">
+                        <div class="phase-title">Fase 1: Tabungan Awal</div>
+                        <div class="phase-badge" id="phase1-status">Belum Selesai</div>
+                    </div>
+                    <div class="phase-target">Target: Rp 10.000.000</div>
+                    <div class="phase-progress-container">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase1-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span>Rp <span id="phase1-current">0</span></span>
+                            <span>Rp 10.000.000</span>
+                        </div>
+                    </div>
+                    <div class="phase-description">
+                        Mulai dari Rp 0 hingga terkumpul Rp 10 juta sebagai dasar kebebasan finansial.
+                    </div>
+                </div>
+                
+                <div class="phase-card phase2">
+                    <div class="phase-header">
+                        <div class="phase-title">Fase 2: Dana Darurat</div>
+                        <div class="phase-badge" id="phase2-status">Belum Dimulai</div>
+                    </div>
+                    <div class="phase-target">Target: 6x Gaji Bulanan (<span id="emergency-target">Rp 0</span>)</div>
+                    <div class="phase-progress-container">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase2-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span>Rp <span id="phase2-current">0</span></span>
+                            <span>Rp <span id="phase2-target">0</span></span>
+                        </div>
+                    </div>
+                    <div class="phase-description">
+                        Dana darurat untuk mengcover 6 bulan pengeluaran jika terjadi keadaan darurat.
+                    </div>
+                </div>
+                
+                <div class="phase-card phase3">
+                    <div class="phase-header">
+                        <div class="phase-title">Fase 3: Kebebasan Finansial</div>
+                        <div class="phase-badge" id="phase3-status">Belum Dimulai</div>
+                    </div>
+                    <div class="phase-target">Target: Rp 100.000.000</div>
+                    <div class="phase-progress-container">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase3-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span>Rp <span id="phase3-current">0</span></span>
+                            <span>Rp 100.000.000</span>
+                        </div>
+                    </div>
+                    <div class="phase-description">
+                        Tabungan yang cukup untuk memulai perjalanan menuju kebebasan finansial penuh.
+                    </div>
+                </div>
+                
+                <div class="phase-card phase4">
+                    <div class="phase-header">
+                        <div class="phase-title">Fase 4: Investasi S&P 500</div>
+                        <div class="phase-badge" id="phase4-status">Belum Dimulai</div>
+                    </div>
+                    <div class="phase-target">Alokasi: 50% dari Tabungan Bulanan</div>
+                    <div class="phase-progress-container">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase4-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span>Rp <span id="phase4-current">0</span></span>
+                            <span>Total Investasi</span>
+                        </div>
+                    </div>
+                    <div class="phase-description">
+                        Investasi bulanan ke S&P 500 untuk pertumbuhan jangka panjang.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card input-section">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-cog"></i> Konfigurasi Awal</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label for="monthly-income">Gaji Bulanan Anda (Rp)</label>
+                    <input type="number" id="monthly-income" placeholder="Contoh: 5000000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="monthly-saving">Target Tabungan Bulanan (Rp)</label>
+                    <input type="number" id="monthly-saving" placeholder="Contoh: 1500000">
+                </div>
+                
+                <button class="btn btn-primary" id="save-config">
+                    <i class="fas fa-save"></i> Simpan Konfigurasi
+                </button>
+                
+                <div class="input-group" style="margin-top: 30px;">
+                    <label for="saving-date">Tanggal Menabung</label>
+                    <input type="date" id="saving-date">
+                </div>
+                
+                <div class="input-group">
+                    <label for="saving-amount">Jumlah Tabungan (Rp)</label>
+                    <input type="number" id="saving-amount" placeholder="Masukkan jumlah yang ditabung">
+                </div>
+                
+                <button class="btn btn-outline" id="add-saving">
+                    <i class="fas fa-plus"></i> Tambahkan Tabungan
+                </button>
+                
+                <div id="investment-input" style="display: none; margin-top: 30px;">
+                    <div class="input-group">
+                        <label for="investment-date">Tanggal Investasi</label>
+                        <input type="date" id="investment-date">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="investment-amount">Jumlah Investasi (Rp)</label>
+                        <input type="number" id="investment-amount" placeholder="Masukkan jumlah yang diinvestasikan">
+                    </div>
+                    
+                    <button class="btn btn-investment" id="add-investment">
+                        <i class="fas fa-chart-line"></i> Tambahkan Investasi
+                    </button>
+                </div>
+                
+                <!-- Konfigurasi Target Keuangan -->
+                <div class="target-configuration">
+                    <div class="target-header">
+                        <i class="fas fa-bullseye"></i>
+                        <h3>Konfigurasi Target Keuangan</h3>
+                    </div>
+                    
+                    <div class="target-input-group">
+                        <div>
+                            <label for="financial-target">Target Keuangan (Rp)</label>
+                            <input type="number" id="financial-target" class="target-input" placeholder="Contoh: 1000000000">
+                        </div>
+                        <div>
+                            <label for="target-period">Jangka Waktu (bulan)</label>
+                            <input type="number" id="target-period" class="target-input" placeholder="Contoh: 60">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="save-target">
+                        <i class="fas fa-save"></i> Simpan Target
+                    </button>
+                    
+                    <div class="target-summary" id="target-summary" style="display: none;">
+                        <h4>Progress Target Keuangan</h4>
+                        <div class="target-metric">
+                            <span>Target:</span>
+                            <span>Rp <span id="target-amount-display">0</span></span>
+                        </div>
+                        <div class="target-metric">
+                            <span>Terkumpul:</span>
+                            <span>Rp <span id="current-savings-display">0</span></span>
+                        </div>
+                        <div class="target-metric">
+                            <span>Kekurangan:</span>
+                            <span>Rp <span id="remaining-amount-display">0</span></span>
+                        </div>
+                        <div class="target-metric">
+                            <span>Tabungan/Bulan:</span>
+                            <span>Rp <span id="monthly-needed">0</span></span>
+                        </div>
+                        
+                        <div class="target-progress-container">
+                            <div>Progress: <span id="target-percentage">0</span>%</div>
+                            <div class="target-progress-bar">
+                                <div class="target-progress-fill" id="target-progress" style="width: 0%"></div>
+                            </div>
+                            <div class="time-remaining" id="time-remaining">Perkiraan tercapai: -</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card savings-overview">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Riwayat Tabungan & Investasi</h2>
+                    <div class="total-savings">Rp <span id="total-savings">0</span></div>
+                </div>
+                
+                <div class="phases-diagram">
+                    <div class="connector-line" id="phase-connector"></div>
+                    
+                    <div class="phase-step phase1">
+                        <div class="phase-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="phase-title">Tabungan Awal</div>
+                        <div class="phase-description">Rp 10.000.000</div>
+                    </div>
+                    
+                    <div class="phase-step phase2">
+                        <div class="phase-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="phase-title">Dana Darurat</div>
+                        <div class="phase-description">6x Gaji Bulanan</div>
+                    </div>
+                    
+                    <div class="phase-step phase3">
+                        <div class="phase-icon">
+                            <i class="fas fa-flag-checkered"></i>
+                        </div>
+                        <div class="phase-title">Kebebasan Finansial</div>
+                        <div class="phase-description">Rp 100.000.000</div>
+                    </div>
+                    
+                    <div class="phase-step phase4">
+                        <div class="phase-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="phase-title">Investasi</div>
+                        <div class="phase-description">S&P 500</div>
+                    </div>
+                </div>
+                
+                <div class="savings-history">
+                    <div class="history-header">
+                        <div>Tanggal</div>
+                        <div>Jumlah</div>
+                    </div>
+                    <div id="savings-history-container">
+                        <div class="no-data">
+                            <i class="fas fa-piggy-bank"></i>
+                            <p>Belum ada riwayat tabungan</p>
+                            <p>Mulai tambahkan tabungan Anda hari ini!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="savings-chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card investment-section" id="investment-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i> Portofolio Investasi S&P 500</h2>
+                    <div class="market-status" id="market-trend">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Memuat data pasar...</span>
+                    </div>
+                </div>
+                
+                <div class="investment-container">
+                    <div class="portfolio-summary">
+                        <div style="color: var(--gray);">Nilai Portofolio Saat Ini</div>
+                        <div class="portfolio-value">Rp <span id="portfolio-value">0</span></div>
+                        
+                        <div class="portfolio-metrics">
+                            <div class="metric-card">
+                                <div style="color: var(--gray);">Total Investasi</div>
+                                <div class="metric-value">Rp <span id="total-invested">0</span></div>
+                                <div class="metric-label">Jumlah yang diinvestasikan</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div style="color: var(--gray);">Keuntungan</div>
+                                <div class="metric-value" id="investment-gain">Rp 0</div>
+                                <div class="metric-label">Keuntungan/kerugian</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div style="color: var(--gray);">Return (%)</div>
+                                <div class="metric-value" id="return-percentage">0%</div>
+                                <div class="metric-label">Pertumbuhan investasi</div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div style="color: var(--gray);">Saham Dimiliki</div>
+                                <div class="metric-value" id="shares-owned">0</div>
+                                <div class="metric-label">Jumlah saham</div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <canvas id="investment-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-history"></i> Riwayat Investasi
+                        </h3>
+                        
+                        <div class="investment-history" id="investment-history-container">
+                            <div class="no-data">
+                                <i class="fas fa-chart-line"></i>
+                                <p>Belum ada riwayat investasi</p>
+                                <p>Mulai tambahkan investasi Anda!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="github-section">
+            <h3>Simpan dan Bagikan di GitHub</h3>
+            <p>Anda dapat menyimpan aplikasi ini sebagai file HTML dan menguploadnya ke GitHub Pages untuk diakses dari mana saja.</p>
+            <a href="#" class="github-btn" id="download-btn">
+                <i class="fas fa-download"></i> Download File HTML
+            </a>
+            <p style="margin-top: 15px; font-size: 14px; color: var(--gray);">Setelah download, upload file ke repository GitHub Anda dan aktifkan GitHub Pages</p>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <div class="notification-content">Pesan notifikasi</div>
+    </div>
+
+    <script>
+        // Data aplikasi
+        const financialData = {
+            monthlyIncome: 0,
+            monthlySaving: 0,
+            savingsHistory: [],
+            investmentHistory: [],
+            totalSavings: 0,
+            totalInvestment: 0,
+            sp500Price: 6388.64, // Harga awal S&P 500
+            usdIdrRate: 16360.00, // Kurs USD/IDR 
+            financialTarget: null,
+            investmentGrowth: 0,
+            investmentShares: 0,
+            phases: {
+                phase1: {
+                    target: 10000000,
+                    current: 0,
+                    completed: false
+                },
+                phase2: {
+                    target: 0,
+                    current: 0,
+                    completed: false
+                },
+                phase3: {
+                    target: 100000000,
+                    current: 0,
+                    completed: false
+                },
+                phase4: {
+                    current: 0,
+                    allocationPercentage: 50
+                }
+            }
+        };
+        
+        // Inisialisasi aplikasi
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set tanggal hari ini
+            const today = new Date();
+            document.getElementById('saving-date').valueAsDate = today;
+            document.getElementById('investment-date').valueAsDate = today;
+            document.getElementById('current-date').textContent = formatDate(today);
+            
+            // Event listeners
+            document.getElementById('save-config').addEventListener('click', saveConfiguration);
+            document.getElementById('add-saving').addEventListener('click', addSaving);
+            document.getElementById('add-investment').addEventListener('click', addInvestment);
+            document.getElementById('monthly-income').addEventListener('input', updateEmergencyTarget);
+            document.getElementById('update-market-data').addEventListener('click', updateMarketData);
+            document.getElementById('save-target').addEventListener('click', saveFinancialTarget);
+            document.getElementById('download-btn').addEventListener('click', downloadHTML);
+            
+            // Load data dari localStorage jika ada
+            loadData();
+            
+            // Update tampilan
+            updateDashboard();
+            updateMarketDisplay();
+            
+            // Mulai simulasi tren pasar
+            simulateMarketTrends();
+        });
+        
+        // Format tanggal
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('id-ID', options);
+        }
+        
+        // Format mata uang
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID').format(amount);
+        }
+        
+        // Format USD
+        function formatUSD(amount) {
+            return new Intl.NumberFormat('en-US', { 
+                style: 'currency', 
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Simpan konfigurasi
+        function saveConfiguration() {
+            const income = parseInt(document.getElementById('monthly-income').value);
+            const saving = parseInt(document.getElementById('monthly-saving').value);
+            
+            if (!income || !saving) {
+                alert('Harap isi gaji bulanan dan target tabungan bulanan');
+                return;
+            }
+            
+            if (saving > income) {
+                alert('Target tabungan bulanan tidak boleh melebihi gaji bulanan');
+                return;
+            }
+            
+            financialData.monthlyIncome = income;
+            financialData.monthlySaving = saving;
+            
+            // Update target dana darurat
+            financialData.phases.phase2.target = income * 6;
+            updateEmergencyTarget();
+            
+            // Update tampilan
+            updateDashboard();
+            
+            // Simpan ke localStorage
+            saveData();
+            
+            showNotification('Konfigurasi berhasil disimpan!', 'success');
+        }
+        
+        // Update target dana darurat
+        function updateEmergencyTarget() {
+            const income = parseInt(document.getElementById('monthly-income').value) || financialData.monthlyIncome;
+            if (income) {
+                document.getElementById('emergency-target').textContent = formatCurrency(income * 6);
+                document.getElementById('phase2-target').textContent = formatCurrency(income * 6);
+            }
+        }
+        
+        // Tambahkan tabungan
+        function addSaving() {
+            if (financialData.monthlyIncome === 0) {
+                alert('Harap isi konfigurasi gaji bulanan terlebih dahulu');
+                return;
+            }
+            
+            const date = document.getElementById('saving-date').value;
+            const amount = parseInt(document.getElementById('saving-amount').value);
+            
+            if (!date || !amount) {
+                alert('Harap isi tanggal dan jumlah tabungan');
+                return;
+            }
+            
+            if (amount <= 0) {
+                alert('Jumlah tabungan harus lebih dari 0');
+                return;
+            }
+            
+            // Tambahkan ke riwayat
+            const savingEntry = {
+                date: date,
+                amount: amount,
+                formattedDate: new Date(date).toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }),
+                type: 'saving'
+            };
+            
+            financialData.savingsHistory.push(savingEntry);
+            financialData.totalSavings += amount;
+            
+            // Update fase
+            updatePhases(amount);
+            
+            // Update tampilan
+            updateDashboard();
+            
+            // Reset form
+            document.getElementById('saving-amount').value = '';
+            
+            // Simpan ke localStorage
+            saveData();
+            
+            showNotification(`Berhasil menambahkan tabungan sebesar Rp ${formatCurrency(amount)}`, 'success');
+        }
+        
+        // Tambahkan investasi
+        function addInvestment() {
+            const date = document.getElementById('investment-date').value;
+            const amount = parseInt(document.getElementById('investment-amount').value);
+            
+            if (!date || !amount) {
+                alert('Harap isi tanggal dan jumlah investasi');
+                return;
+            }
+            
+            if (amount <= 0) {
+                alert('Jumlah investasi harus lebih dari 0');
+                return;
+            }
+            
+            // Hitung jumlah saham yang dibeli
+            const sharesBought = amount / (financialData.sp500Price * financialData.usdIdrRate);
+            
+            // Tambahkan ke riwayat
+            const investmentEntry = {
+                date: date,
+                amount: amount,
+                shares: sharesBought,
+                price: financialData.sp500Price,
+                exchangeRate: financialData.usdIdrRate,
+                formattedDate: new Date(date).toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }),
+                type: 'investment'
+            };
+            
+            financialData.investmentHistory.push(investmentEntry);
+            financialData.totalInvestment += amount;
+            financialData.investmentShares += sharesBought;
+            financialData.phases.phase4.current += amount;
+            
+            // Update tampilan
+            updateDashboard();
+            updateInvestmentPortfolio();
+            
+            // Reset form
+            document.getElementById('investment-amount').value = '';
+            
+            // Simpan ke localStorage
+            saveData();
+            
+            showNotification(`Berhasil berinvestasi Rp ${formatCurrency(amount)} (${sharesBought.toFixed(6)} saham)`, 'success');
+        }
+        
+        // Update fase berdasarkan tabungan baru
+        function updatePhases(amount) {
+            // Fase 1: Tabungan Awal (Rp 10 juta)
+            if (!financialData.phases.phase1.completed) {
+                const remainingPhase1 = financialData.phases.phase1.target - financialData.phases.phase1.current;
+                
+                if (amount <= remainingPhase1) {
+                    financialData.phases.phase1.current += amount;
+                } else {
+                    financialData.phases.phase1.current = financialData.phases.phase1.target;
+                    financialData.phases.phase1.completed = true;
+                    
+                    // Sisa tabungan masuk ke fase 2
+                    const remaining = amount - remainingPhase1;
+                    financialData.phases.phase2.current += remaining;
+                }
+            } 
+            // Fase 2: Dana Darurat (6x gaji)
+            else if (!financialData.phases.phase2.completed) {
+                const remainingPhase2 = financialData.phases.phase2.target - financialData.phases.phase2.current;
+                
+                if (amount <= remainingPhase2) {
+                    financialData.phases.phase2.current += amount;
+                } else {
+                    financialData.phases.phase2.current = financialData.phases.phase2.target;
+                    financialData.phases.phase2.completed = true;
+                    
+                    // Sisa tabungan masuk ke fase 3
+                    const remaining = amount - remainingPhase2;
+                    financialData.phases.phase3.current += remaining;
+                    
+                    // Tampilkan input investasi
+                    document.getElementById('investment-input').style.display = 'block';
+                    document.getElementById('investment-card').style.display = 'block';
+                }
+            } 
+            // Fase 3: Kebebasan Finansial (Rp 100 juta)
+            else {
+                financialData.phases.phase3.current += amount;
+                if (financialData.phases.phase3.current >= financialData.phases.phase3.target) {
+                    financialData.phases.phase3.completed = true;
+                }
+            }
+        }
+        
+        // Update tampilan dashboard
+        function updateDashboard() {
+            // Update total tabungan
+            document.getElementById('total-savings').textContent = formatCurrency(financialData.totalSavings);
+            
+            // Update fase 1
+            const phase1Progress = (financialData.phases.phase1.current / financialData.phases.phase1.target) * 100;
+            document.getElementById('phase1-progress').style.width = `${phase1Progress}%`;
+            document.getElementById('phase1-current').textContent = formatCurrency(financialData.phases.phase1.current);
+            document.getElementById('phase1-status').textContent = financialData.phases.phase1.completed ? 'Selesai' : 'Belum Selesai';
+            document.getElementById('phase1-status').style.color = financialData.phases.phase1.completed ? 'var(--secondary)' : 'var(--danger)';
+            
+            // Update fase 2
+            const phase2Target = financialData.monthlyIncome * 6;
+            const phase2Progress = financialData.phases.phase2.target > 0 ? 
+                (financialData.phases.phase2.current / financialData.phases.phase2.target) * 100 : 0;
+            
+            document.getElementById('phase2-progress').style.width = `${phase2Progress}%`;
+            document.getElementById('phase2-current').textContent = formatCurrency(financialData.phases.phase2.current);
+            document.getElementById('phase2-target').textContent = formatCurrency(phase2Target);
+            document.getElementById('phase2-status').textContent = financialData.phases.phase2.completed ? 'Selesai' : 
+                financialData.phases.phase1.completed ? 'Dalam Proses' : 'Belum Dimulai';
+            document.getElementById('phase2-status').style.color = financialData.phases.phase2.completed ? 'var(--secondary)' : 
+                financialData.phases.phase1.completed ? 'var(--warning)' : 'var(--danger)';
+            
+            // Update fase 3
+            const phase3Progress = (financialData.phases.phase3.current / financialData.phases.phase3.target) * 100;
+            document.getElementById('phase3-progress').style.width = `${phase3Progress}%`;
+            document.getElementById('phase3-current').textContent = formatCurrency(financialData.phases.phase3.current);
+            document.getElementById('phase3-status').textContent = financialData.phases.phase3.completed ? 'Selesai' : 
+                financialData.phases.phase2.completed ? 'Dalam Proses' : 'Belum Dimulai';
+            document.getElementById('phase3-status').style.color = financialData.phases.phase3.completed ? 'var(--secondary)' : 
+                financialData.phases.phase2.completed ? 'var(--warning)' : 'var(--danger)';
+            
+            // Update fase 4 (Investasi)
+            document.getElementById('phase4-current').textContent = formatCurrency(financialData.phases.phase4.current);
+            document.getElementById('phase4-status').textContent = financialData.phases.phase2.completed ? 'Aktif' : 'Belum Dimulai';
+            document.getElementById('phase4-status').style.color = financialData.phases.phase2.completed ? 'var(--phase4)' : 'var(--danger)';
+            
+            // Tampilkan input investasi jika fase 2 selesai
+            if (financialData.phases.phase2.completed) {
+                document.getElementById('investment-input').style.display = 'block';
+                document.getElementById('investment-card').style.display = 'block';
+            }
+            
+            // Update diagram fase
+            const phaseConnector = document.getElementById('phase-connector');
+            if (financialData.phases.phase3.completed) {
+                phaseConnector.style.setProperty('--progress', '100%');
+            } else if (financialData.phases.phase2.completed) {
+                phaseConnector.style.setProperty('--progress', '66%');
+            } else if (financialData.phases.phase1.completed) {
+                phaseConnector.style.setProperty('--progress', '33%');
+            } else {
+                phaseConnector.style.setProperty('--progress', '0%');
+            }
+            
+            // Update riwayat tabungan
+            updateSavingsHistory();
+            
+            // Update grafik
+            updateChart();
+            
+            // Update portofolio investasi
+            updateInvestmentPortfolio();
+            
+            // Update target keuangan
+            updateTargetProgress();
+        }
+        
+        // Update riwayat tabungan
+        function updateSavingsHistory() {
+            const container = document.getElementById('savings-history-container');
+            
+            if (financialData.savingsHistory.length === 0 && financialData.investmentHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-piggy-bank"></i>
+                        <p>Belum ada riwayat tabungan</p>
+                        <p>Mulai tambahkan tabungan Anda hari ini!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Gabungkan dan urutkan riwayat
+            const allHistory = [...financialData.savingsHistory, ...financialData.investmentHistory].sort((a, b) => 
+                new Date(b.date) - new Date(a.date)
+            );
+            
+            let html = '';
+            allHistory.forEach(entry => {
+                const isInvestment = entry.type === 'investment';
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${entry.formattedDate}</div>
+                        <div class="history-amount ${isInvestment ? 'investment-amount' : 'savings-amount'}">
+                            ${isInvestment ? '<i class="fas fa-chart-line"></i> ' : '<i class="fas fa-piggy-bank"></i> '}
+                            ${isInvestment ? 'Investasi: ' : 'Tabungan: '}
+                            Rp ${formatCurrency(entry.amount)}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Update portofolio investasi
+        function updateInvestmentPortfolio() {
+            // Hitung nilai portofolio saat ini
+            const portfolioValue = financialData.investmentShares * financialData.sp500Price * financialData.usdIdrRate;
+            
+            // Hitung keuntungan/kerugian
+            const gain = portfolioValue - financialData.totalInvestment;
+            const returnPercentage = financialData.totalInvestment > 0 ? 
+                ((portfolioValue - financialData.totalInvestment) / financialData.totalInvestment) * 100 : 0;
+            
+            // Update tampilan
+            document.getElementById('portfolio-value').textContent = formatCurrency(portfolioValue);
+            document.getElementById('total-invested').textContent = formatCurrency(financialData.totalInvestment);
+            document.getElementById('investment-gain').textContent = 
+                `${gain >= 0 ? '+' : ''}${formatCurrency(gain)} (${returnPercentage.toFixed(2)}%)`;
+            document.getElementById('investment-gain').style.color = gain >= 0 ? 'var(--secondary)' : 'var(--danger)';
+            document.getElementById('return-percentage').textContent = `${returnPercentage.toFixed(2)}%`;
+            document.getElementById('return-percentage').style.color = returnPercentage >= 0 ? 'var(--secondary)' : 'var(--danger)';
+            document.getElementById('shares-owned').textContent = financialData.investmentShares.toFixed(6);
+            
+            // Update harga S&P 500
+            document.getElementById('sp500-price').textContent = financialData.sp500Price.toFixed(2);
+            
+            // Update riwayat investasi
+            updateInvestmentHistory();
+            
+            // Update grafik investasi
+            updateInvestmentChart();
+            
+            // Update tampilan pasar
+            updateMarketDisplay();
+        }
+        
+        // Update riwayat investasi
+        function updateInvestmentHistory() {
+            const container = document.getElementById('investment-history-container');
+            
+            if (financialData.investmentHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-chart-line"></i>
+                        <p>Belum ada riwayat investasi</p>
+                        <p>Mulai tambahkan investasi Anda!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            financialData.investmentHistory.forEach(entry => {
+                html += `
+                    <div class="investment-history-item">
+                        <div class="history-date">${entry.formattedDate}</div>
+                        <div class="history-amount investment-amount">
+                            Rp ${formatCurrency(entry.amount)} (${entry.shares.toFixed(6)} saham)
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Update grafik tabungan
+        function updateChart() {
+            const ctx = document.getElementById('savings-chart').getContext('2d');
+            
+            // Hapus chart sebelumnya jika ada
+            if (window.savingsChart) {
+                window.savingsChart.destroy();
+            }
+            
+            // Siapkan data untuk chart
+            const labels = [];
+            const savingsData = [];
+            const investmentData = [];
+            let cumulativeSavings = 0;
+            let cumulativeInvestment = 0;
+            
+            // Urutkan berdasarkan tanggal
+            const sortedHistory = [...financialData.savingsHistory, ...financialData.investmentHistory].sort((a, b) => 
+                new Date(a.date) - new Date(b.date)
+            );
+            
+            sortedHistory.forEach(entry => {
+                if (entry.type === 'saving') {
+                    cumulativeSavings += entry.amount;
+                } else if (entry.type === 'investment') {
+                    cumulativeInvestment += entry.amount;
+                }
+                
+                labels.push(entry.formattedDate);
+                savingsData.push(cumulativeSavings);
+                investmentData.push(cumulativeInvestment);
+            });
+            
+            // Buat chart baru
+            window.savingsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Tabungan',
+                            data: savingsData,
+                            borderColor: 'var(--primary)',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: 'var(--primary)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Total Investasi',
+                            data: investmentData,
+                            borderColor: 'var(--phase4)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: 'var(--phase4)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: Rp ${formatCurrency(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update grafik investasi
+        function updateInvestmentChart() {
+            const ctx = document.getElementById('investment-chart').getContext('2d');
+            
+            // Hapus chart sebelumnya jika ada
+            if (window.investmentChart) {
+                window.investmentChart.destroy();
+            }
+            
+            // Siapkan data untuk chart
+            const labels = [];
+            const portfolioValues = [];
+            let cumulativeInvestment = 0;
+            
+            // Urutkan berdasarkan tanggal
+            const sortedHistory = [...financialData.investmentHistory].sort((a, b) => 
+                new Date(a.date) - new Date(b.date)
+            );
+            
+            sortedHistory.forEach((entry, index) => {
+                cumulativeInvestment += entry.amount;
+                const portfolioValue = financialData.investmentShares * financialData.sp500Price * financialData.usdIdrRate; // Harga saat ini
+                
+                labels.push(entry.formattedDate);
+                portfolioValues.push(portfolioValue);
+            });
+            
+            // Buat chart baru jika ada data
+            if (sortedHistory.length > 0) {
+                window.investmentChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Nilai Portofolio',
+                            data: portfolioValues,
+                            borderColor: 'var(--phase4)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: 'var(--phase4)',
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Rp ${formatCurrency(context.raw)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp ' + formatCurrency(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Simulasi perubahan harga S&P 500
+        function simulateSP500Price() {
+            setInterval(() => {
+                // Simulasi perubahan kecil pada harga
+                const change = (Math.random() - 0.5) * 0.02; // -1% sampai +1%
+                financialData.sp500Price = financialData.sp500Price * (1 + change);
+                
+                // Update portofolio
+                updateInvestmentPortfolio();
+            }, 5000); // Update setiap 5 detik
+        }
+        
+        // Simpan data ke localStorage
+        function saveData() {
+            localStorage.setItem('financialData', JSON.stringify(financialData));
+        }
+        
+        // Muat data dari localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('financialData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                Object.assign(financialData, parsedData);
+                
+                // Isi form dengan data yang ada
+                if (financialData.monthlyIncome > 0) {
+                    document.getElementById('monthly-income').value = financialData.monthlyIncome;
+                }
+                if (financialData.monthlySaving > 0) {
+                    document.getElementById('monthly-saving').value = financialData.monthlySaving;
+                }
+                if (financialData.financialTarget) {
+                    document.getElementById('financial-target').value = financialData.financialTarget.amount;
+                    document.getElementById('target-period').value = financialData.financialTarget.period;
+                    document.getElementById('target-summary').style.display = 'block';
+                }
+                
+                updateEmergencyTarget();
+                
+                // Tampilkan input investasi jika fase 2 sudah selesai
+                if (financialData.phases.phase2.completed) {
+                    document.getElementById('investment-input').style.display = 'block';
+                    document.getElementById('investment-card').style.display = 'block';
+                }
+            }
+        }
+        
+        // Fungsi baru untuk menampilkan notifikasi
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const icon = notification.querySelector('i');
+            const content = notification.querySelector('.notification-content');
+            
+            // Atur jenis notifikasi
+            notification.className = 'notification ' + type;
+            content.textContent = message;
+            
+            // Atur ikon berdasarkan jenis
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else if (type === 'warning') {
+                icon.className = 'fas fa-exclamation-triangle';
+            } else {
+                icon.className = 'fas fa-info-circle';
+            }
+            
+            // Tampilkan notifikasi
+            notification.classList.add('show');
+            
+            // Sembunyikan setelah 5 detik
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Fungsi baru untuk simulasi tren pasar
+        function simulateMarketTrends() {
+            // Perbarui setiap 10 detik
+            setInterval(() => {
+                const marketStatus = document.getElementById('market-trend');
+                const marketIcons = {
+                    up: '<i class="fas fa-arrow-up market-up"></i>',
+                    down: '<i class="fas fa-arrow-down market-down"></i>',
+                    stable: '<i class="fas fa-minus"></i>'
+                };
+                
+                // Tren acak dengan kemungkinan yang berbeda
+                const trends = [
+                    { type: 'up', text: 'Pasar sedang naik', icon: marketIcons.up, probability: 0.6 },
+                    { type: 'down', text: 'Pasar sedang turun', icon: marketIcons.down, probability: 0.3 },
+                    { type: 'stable', text: 'Pasar stabil', icon: marketIcons.stable, probability: 0.1 }
+                ];
+                
+                // Pilih tren berdasarkan probabilitas
+                let selectedTrend;
+                const rand = Math.random();
+                let cumulative = 0;
+                
+                for (const trend of trends) {
+                    cumulative += trend.probability;
+                    if (rand <= cumulative) {
+                        selectedTrend = trend;
+                        break;
+                    }
+                }
+                
+                // Update tampilan
+                marketStatus.innerHTML = `${selectedTrend.icon} ${selectedTrend.text}`;
+                
+            }, 10000);
+        }
+        
+        // Fungsi baru: Update data pasar
+        async function updateMarketData() {
+            try {
+                // Simulasi pengambilan data real-time
+                const sp500Response = await fetchSP500Price();
+                const usdIdrResponse = await fetchUSDIDR();
+                
+                financialData.sp500Price = sp500Response;
+                financialData.usdIdrRate = usdIdrResponse;
+                
+                // Update tampilan
+                updateMarketDisplay();
+                updateInvestmentPortfolio();
+                
+                showNotification('Data pasar berhasil diperbarui!', 'success');
+            } catch (error) {
+                showNotification('Gagal memperbarui data pasar', 'warning');
+                console.error('Error updating market data:', error);
+            }
+        }
+        
+        // Fungsi simulasi pengambilan harga S&P 500
+        async function fetchSP500Price() {
+            // Harga real-time (simulasi)
+            const variation = (Math.random() - 0.5) * 0.02;
+            return financialData.sp500Price * (1 + variation);
+        }
+        
+        // Fungsi simulasi pengambilan kurs USD/IDR
+        async function fetchUSDIDR() {
+            // Kurs (simulasi)
+            const variation = (Math.random() - 0.5) * 0.01;
+            return financialData.usdIdrRate * (1 + variation);
+        }
+        
+        // Update tampilan data pasar
+        function updateMarketDisplay() {
+            document.getElementById('real-sp500-price').textContent = 
+                `$${financialData.sp500Price.toFixed(2)}`;
+            
+            document.getElementById('real-usd-idr').textContent = 
+                `Rp${formatCurrency(financialData.usdIdrRate)}`;
+            
+            // Update nilai investasi
+            const portfolioValue = financialData.investmentShares * financialData.sp500Price * financialData.usdIdrRate;
+            document.getElementById('real-investment-value').textContent = 
+                `Rp${formatCurrency(portfolioValue)}`;
+        }
+        
+        // Fungsi baru: Simpan target keuangan
+        function saveFinancialTarget() {
+            const targetAmount = parseInt(document.getElementById('financial-target').value);
+            const targetPeriod = parseInt(document.getElementById('target-period').value);
+            
+            if (!targetAmount || !targetPeriod || targetPeriod <= 0) {
+                showNotification('Harap isi target keuangan dan jangka waktu dengan benar', 'warning');
+                return;
+            }
+            
+            financialData.financialTarget = {
+                amount: targetAmount,
+                period: targetPeriod, // dalam bulan
+                startDate: new Date().toISOString().split('T')[0]
+            };
+            
+            // Tampilkan summary
+            document.getElementById('target-summary').style.display = 'block';
+            
+            saveData();
+            updateDashboard();
+            showNotification('Target keuangan berhasil disimpan!', 'success');
+        }
+        
+        // Fungsi baru: Update tampilan target keuangan
+        function updateTargetProgress() {
+            if (!financialData.financialTarget) return;
+            
+            const target = financialData.financialTarget.amount;
+            const currentSavings = financialData.totalSavings;
+            const progressPercentage = Math.min((currentSavings / target) * 100, 100);
+            
+            document.getElementById('target-progress').style.width = `${progressPercentage}%`;
+            document.getElementById('target-amount-display').textContent = formatCurrency(target);
+            document.getElementById('current-savings-display').textContent = formatCurrency(currentSavings);
+            
+            const remaining = target - currentSavings;
+            document.getElementById('remaining-amount-display').textContent = formatCurrency(remaining > 0 ? remaining : 0);
+            
+            document.getElementById('target-percentage').textContent = progressPercentage.toFixed(1);
+            
+            // Hitung tabungan bulanan yang dibutuhkan
+            const monthlyNeeded = remaining / financialData.financialTarget.period;
+            document.getElementById('monthly-needed').textContent = formatCurrency(monthlyNeeded);
+            
+            // Hitung tanggal perkiraan tercapai
+            const startDate = new Date(financialData.financialTarget.startDate);
+            const targetDate = new Date(startDate);
+            targetDate.setMonth(targetDate.getMonth() + financialData.financialTarget.period);
+            
+            document.getElementById('time-remaining').textContent = 
+                `Perkiraan tercapai: ${targetDate.toLocaleDateString('id-ID')}`;
+        }
+        
+        // Fungsi untuk mendownload file HTML
+        function downloadHTML() {
+            const htmlContent = `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Freedom Planner - Investasi S&P 500</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>${document.querySelector('style').innerHTML}</style>
+</head>
+<body>
+    ${document.body.innerHTML}
+</body>
+</html>`;
+            
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'financial-freedom-planner.html';
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            showNotification('File HTML berhasil didownload!', 'success');
+        }
+    </script>
+</body>
+</html>
